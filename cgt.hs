@@ -13,10 +13,10 @@ putR goRight (Position left right) = Position left (goRight:right)
 
 showGame :: Game -> String
 showGame (Position [] []) = "{|}"
-showGame (Position left []) = "{"++(showGame l <- left)++"|}"
-showGame (Position [] right) ="{|"++(showGame r <- right)++"}"
+showGame (Position left []) = "{"++(show (map showGame left))++"|}"
+showGame (Position [] right) ="{|"++(show (map showGame right))++"}"
 showGame (Position left right)
-    = "{"++(showGame l <- left)++"|"++(showGame r <- right)++"}"
+    = "{"++(show(map showGame left))++"|"++(show (map showGame right))++"}"
 
 
 --fun!
