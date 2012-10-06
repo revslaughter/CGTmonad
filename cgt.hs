@@ -11,12 +11,12 @@ putL goLeft (Position left right) = Position (goLeft:left) right
 putR :: Game -> Game -> Game
 putR goRight (Position left right) = Position left (goRight:right)
 
-showGame :: Game -> String
-showGame (Position [] []) = "{|}"
-showGame (Position left []) = "{"++(show (map showGame left))++"|}"
-showGame (Position [] right) ="{|"++(show (map showGame right))++"}"
-showGame (Position left right)
-    = "{"++(show(map showGame left))++"|"++(show (map showGame right))++"}"
+instance Show Game where
+    show (Position [] []) = "{|}"
+    show (Position left []) = "{"++(show (map show left))++"|}"
+    show (Position [] right) ="{|"++(show (map show right))++"}"
+    show (Position left right)
+        = "{"++(show(map show left))++"|"++(show (map show right))++"}"
 
 
 --fun!
