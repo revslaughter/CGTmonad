@@ -14,6 +14,12 @@ putL goLeft (Position left right) = Position (goLeft:left) right
 putR :: Game -> Game -> Game
 putR goRight (Position left right) = Position left (goRight:right)
 
+getLeft :: Game -> [Game]
+getLeft (Position left right) = left
+
+getRight :: Game -> [Game]
+getRight (Position left right) = right
+
 --overloading?
 instance Show Game where
     show (Position [] []) = "{|}"
@@ -65,6 +71,6 @@ instance Eq Game where
     xGame == yGame = (xGame <= yGame) && (yGame <= xGame)
 
 instance Ord Game where
-    (Position xLeft xRight) <= (Position yLeft yRight) =
-        (foldl (&&) True (map ((Position yLeft yRight) <=) xLeft))
-            && (foldl (&&) True (map (<= (Position xLeft xRight)) yRight))
+    (Position xLeft xRight) >= (Position yLeft yRight) =
+        ((foldl (&&) True (map (<= (Position yLeft yRight)) xRight))
+            && (foldl (&&) True (map ((Position xLeft xRight) <=) yLeft)))
