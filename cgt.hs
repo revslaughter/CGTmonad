@@ -17,23 +17,50 @@ putR goRight (Position left right) = Position left (goRight:right)
 --overloading?
 instance Show Game where
     show (Position [] []) = "{|}"
-    show (Position left []) = "{"++(show (map show left))++"|}"
-    show (Position [] right) ="{|"++(show (map show right))++"}"
+    show (Position left []) = "{"++(foldl (++) "" (map show left))++"|}"
+    show (Position [] right) ="{|"++(foldl (++) "" (map show right))++"}"
     show (Position left right)
-        = "{"++(show(map show left))++"|"++(show (map show right))++"}"
+        = "{"
+        ++(foldl (++) "" (map show left))
+        ++"|"
+        ++(foldl (++) "" (map show right))
+        ++"}"
 
 instance Num Game where
     negate (Position left right)
         = Position (map negate right) (map negate left)
+    {--
+        Addition is messy. Multiplication is worse!
+        Basically it's like a cross product. Take two games
+        X = {X.L|X.R} and Y = {Y.L | Y.R}
+
+        Then X + Y = {
+                      (g + Y for each position g in X.L),
+                      (h + X for each position h in y.L)
+                      |
+                      (i + Y for each position i in X.R),
+                      (j + X for each position j in Y.R)
+                     }
+        Addition is well defined for all games.
+        Multiplication is only well defined for numbers
+    --}
     (Position xLeft xRight) + (Position yLeft yRight)
         = (Position ((map (+ (Position yLeft yRight)) xLeft)
         ++(map (+ (Position xLeft xRight)) yLeft))
         ((map (+ (Position yLeft yRight)) xRight)
             ++(map (+ (Position xLeft xRight)) yRight)))
+    --With addition supplied subtraction is easy!
     xGame - yGame = xGame + (negate yGame)
+    {--This allows you to make things like Position [3] [10], a game,
+       or half = Position [1,0] [], which is a surreal number.
+       Easier than Python!
+       Also in Python I could only make surreal numbers up to 999,
+       but with this I was able to do (Position [10000] [])
+       (it just took a while to compute)
+    --}
     fromInteger x
         | x > 0 = (Position [fromInteger (x-1)] [])
-        | x < 0 = (Position [] [fromInteger (x+1)])
+        | x < 0 = negate $ fromInteger $ negate x
         | otherwise = (Position [] [])
 
 --fun!
