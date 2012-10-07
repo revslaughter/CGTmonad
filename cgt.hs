@@ -3,14 +3,18 @@
 
 data Game = Position [Game] [Game]
 
+--some basic games
 zeroGame = Position [] []
+starGame = putL zeroGame $ putR zeroGame zeroGame
 
+--basic game functions
 putL :: Game -> Game -> Game
 putL goLeft (Position left right) = Position (goLeft:left) right
 
 putR :: Game -> Game -> Game
 putR goRight (Position left right) = Position left (goRight:right)
 
+--overloading?
 instance Show Game where
     show (Position [] []) = "{|}"
     show (Position left []) = "{"++(show (map show left))++"|}"
@@ -18,5 +22,9 @@ instance Show Game where
     show (Position left right)
         = "{"++(show(map show left))++"|"++(show (map show right))++"}"
 
-
+instance Num Game where
+    negate (Position left right)
+        = Position (map negate right) (map negate left)
+    
+    
 --fun!
