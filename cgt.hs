@@ -26,7 +26,9 @@ instance Num Game where
     negate (Position left right)
         = Position (map negate right) (map negate left)
     (Position xLeft xRight) + (Position yLeft yRight)
-        = Position (map (+ (Position yLeft yRight)) xLeft):(map (+ (Position xLeft xRight)) yLeft) (map (+ (Position yLeft yRight)) xRight):(map (+ (Position xLeft xRight)) yRight)
-    
+        = (Position ((map (+ (Position yLeft yRight)) xLeft)
+        ++(map (+ (Position xLeft xRight)) yLeft))
+        ((map (+ (Position yLeft yRight)) xRight)
+            ++(map (+ (Position xLeft xRight)) yRight)))
     
 --fun!
