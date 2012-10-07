@@ -42,8 +42,7 @@ instance Num Game where
                       (j + X for each position j in Y.R)
                      }
         Addition is well defined for all games.
-        Multiplication is only well defined for numbers
-    --}
+        Multiplication is only well defined for numbers--}
     (Position xLeft xRight) + (Position yLeft yRight)
         = (Position ((map (+ (Position yLeft yRight)) xLeft)
         ++(map (+ (Position xLeft xRight)) yLeft))
@@ -56,11 +55,16 @@ instance Num Game where
        Easier than Python!
        Also in Python I could only make surreal numbers up to 999,
        but with this I was able to do (Position [10000] [])
-       (it just took a while to compute)
-    --}
+       (it just took a while to compute)--}
     fromInteger x
         | x > 0 = (Position [fromInteger (x-1)] [])
         | x < 0 = negate $ fromInteger $ negate x
         | otherwise = (Position [] [])
 
---fun!
+instance Eq Game where
+    xGame == yGame = (xGame <= yGame) && (yGame <= xGame)
+
+instance Ord Game where
+    (Position xLeft xRight) <= (Position yLeft yRight) =
+        (foldl (&&) True (map ((Position yLeft yRight) <=) xLeft))
+            && (foldl (&&) True (map (<= (Position xLeft xRight)) yRight))
