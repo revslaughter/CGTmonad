@@ -30,5 +30,10 @@ instance Num Game where
         ++(map (+ (Position xLeft xRight)) yLeft))
         ((map (+ (Position yLeft yRight)) xRight)
             ++(map (+ (Position xLeft xRight)) yRight)))
-    
+    xGame - yGame = xGame + (negate yGame)
+    fromInteger x
+        | x > 0 = (Position [fromInteger (x-1)] [])
+        | x < 0 = (Position [] [fromInteger (x+1)])
+        | otherwise = (Position [] [])
+
 --fun!
