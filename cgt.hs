@@ -6,7 +6,9 @@ data Game = Position{ right :: [Game], left :: [Game] }
 
 --some basic games
 zeroGame = Position [] []
-starGame = putL zeroGame $ putR zeroGame zeroGame
+starGame = Position [zeroGame] [zeroGame]
+upGame   = Position [zeroGame] [starGame]
+downGame = Position [starGame] [zeroGame]
 
 --basic game functions
 putL :: Game -> Game -> Game
@@ -51,7 +53,7 @@ instance Num Game where
    {--This allows you to make things like Position [3] [10], a game,
        or half = Position [1,0] [], which is a surreal number.
        Easier than Python!
-       Also in Python I concatMauld only make surreal numbers up to 999,
+       Also in Python I could only make surreal numbers up to 999,
        but with this I was able to do (Position [10000] [])
        (it just took a while to compute)--}
     fromInteger x
@@ -62,9 +64,10 @@ instance Num Game where
     abs    = undefined
     (*)    = undefined
 
---instance Eq Game where
---    xGame == yGame = (xGame <= yGame) && (yGame <= xGame)
 
+instance Eq Game where
+	p1@(Position xL xR) == p2@(Position yL yR) = xL == yL && xR == yR
+	
 --instance Ord Game where
 --    p1@(Position xL xR) >= p2@(Position yL yR) = all (<= p2) xR && all (p1 <=) yL
 
