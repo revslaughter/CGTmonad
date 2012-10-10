@@ -50,9 +50,8 @@ instance Num Game where
     p1@(Position xLeft xRight) + p2@(Position yLeft yRight)
         = Position (map (+p2) xLeft   ++ map (+p1) yLeft)
                    (map (+p2) xRight  ++ map (+p1) yRight)
-    --With Addition supplied subtraction is easy!
-    --xGame - yGame = xGame + negate yGame
-    {--This allows you to make things like Position [3] [10], a game,
+    --Subtraction is deduced by the compiler! ;)
+   {--This allows you to make things like Position [3] [10], a game,
        or half = Position [1,0] [], which is a surreal number.
        Easier than Python!
        Also in Python I concatMauld only make surreal numbers up to 999,
