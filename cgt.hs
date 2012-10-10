@@ -24,7 +24,7 @@ getRight (Position _ right) = right
 instance Show Game where
     show (Position [] [])      = "{|}"
     show (Position left [])    = "{" ++ showAll left ++ "|}"
-    show (Position [] right)   ="{|"++ showAll right++ "}"
+    show (Position [] right)   = "{|"++ showAll right++ "}"
     show (Position left right) = "{" ++ showAll left ++ "|" 
                                      ++ showAll right ++ "}"
 
@@ -32,8 +32,8 @@ showAll :: (Show a) => [a] -> String
 showAll = concatMap show
 
 instance Num Game where
-    negate (Position left right)
-        = Position (map negate right) (map negate left)
+    negate (Position left right) = Position (map negate right) (map negate left)
+
     {--
         Addition is messy. Multiplication is worse!
         Basically it's like a cross product. Take two games
@@ -48,6 +48,7 @@ instance Num Game where
                      }
         Addition is well defined for all games.
         Multiplication is only well defined for numbers--}
+
     p1@(Position xLeft xRight) + p2@(Position yLeft yRight)
         = Position (map (+p2) xLeft   ++ map (+p1) yLeft)
                    (map (+p2) xRight  ++ map (+p1) yRight)
@@ -70,6 +71,7 @@ instance Eq Game where
     xGame == yGame = (xGame <= yGame) && (yGame <= xGame)
 
 instance Ord Game where
-    (Position xLeft xRight) >= (Position yLeft yRight) =
-        ((foldl (&&) True (map (<= (Position yLeft yRight)) xRight))
-            && (foldl (&&) True (map ((Position xLeft xRight) <=) yLeft)))
+    p1@(Position xL xR) >= p2@(Position yL yR) = all (<= p2) xR && all (p1 <=) yL
+
+--(foldl (&&) True (map (<= (Position yLeft yRight)) xRight)
+--&& (foldl (&&) True (map ((Position xLeft xRight) <=) yLeft)))
