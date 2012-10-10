@@ -1,7 +1,8 @@
 --A game that is Zero (base case) is two empties
 --Anything else must be two lists of games, a left list and a right list.
 
-data Game = Position [Game] [Game]
+--"right" and "left" can replace "getRight" and "getLeft" (eg: right (Position [1] [1] = [1]))
+data Game = Position{ right :: [Game], left :: [Game] }
 
 --some basic games
 zeroGame = Position [] []
@@ -13,12 +14,6 @@ putL goLeft (Position left right) = Position (goLeft:left) right
 
 putR :: Game -> Game -> Game
 putR goRight (Position left right) = Position left (goRight:right)
-
-getLeft :: Game -> [Game]
-getLeft (Position left _) = left
-
-getRight :: Game -> [Game]
-getRight (Position _ right) = right
 
 --overloading?
 instance Show Game where
@@ -67,11 +62,11 @@ instance Num Game where
     abs    = undefined
     (*)    = undefined
 
-instance Eq Game where
-    xGame == yGame = (xGame <= yGame) && (yGame <= xGame)
+--instance Eq Game where
+--    xGame == yGame = (xGame <= yGame) && (yGame <= xGame)
 
-instance Ord Game where
-    p1@(Position xL xR) >= p2@(Position yL yR) = all (<= p2) xR && all (p1 <=) yL
+--instance Ord Game where
+--    p1@(Position xL xR) >= p2@(Position yL yR) = all (<= p2) xR && all (p1 <=) yL
 
---(foldl (&&) True (map (<= (Position yLeft yRight)) xRight)
---&& (foldl (&&) True (map ((Position xLeft xRight) <=) yLeft)))
+-- (foldl (&&) True (map (<= (Position yLeft yRight)) xRight)
+-- && (foldl (&&) True (map ((Position xLeft xRight) <=) yLeft)))
