@@ -15,22 +15,20 @@ putR :: Game -> Game -> Game
 putR goRight (Position left right) = Position left (goRight:right)
 
 getLeft :: Game -> [Game]
-getLeft (Position left right) = left
+getLeft (Position left _) = left
 
 getRight :: Game -> [Game]
-getRight (Position left right) = right
+getRight (Position _ right) = right
 
 --overloading?
 instance Show Game where
     show (Position [] []) = "{|}"
-    show (Position left []) = "{"++(foldl (++) "" (map show left))++"|}"
-    show (Position [] right) ="{|"++(foldl (++) "" (map show right))++"}"
+    show (Position left []) = "{" ++ concatMap show left ++ "|}"
+    show (Position [] right) ="{|"++ concatMap show right++ "}"
     show (Position left right)
-        = "{"
-        ++(foldl (++) "" (map show left))
-        ++"|"
-        ++(foldl (++) "" (map show right))
-        ++"}"
+        = "{" ++ concatMap show left
+              ++"|"
+              ++ concatMap show right ++ "}"
 
 instance Num Game where
     negate (Position left right)
@@ -49,23 +47,24 @@ instance Num Game where
                      }
         Addition is well defined for all games.
         Multiplication is only well defined for numbers--}
-    (Position xLeft xRight) + (Position yLeft yRight)
-        = (Position ((map (+ (Position yLeft yRight)) xLeft)
-        ++(map (+ (Position xLeft xRight)) yLeft))
-        ((map (+ (Position yLeft yRight)) xRight)
-            ++(map (+ (Position xLeft xRight)) yRight)))
-    --With addition supplied subtraction is easy!
-    xGame - yGame = xGame + (negate yGame)
+    p1@(Position xLeft xRight) + p2@(Position yLeft yRight)
+        = Position (map (+p2) xLeft   ++ map (+p1) yLeft)
+                   (map (+p2) xRight  ++ map (+p1) yRight)
+    --With Addition supplied subtraction is easy!
+    --xGame - yGame = xGame + negate yGame
     {--This allows you to make things like Position [3] [10], a game,
        or half = Position [1,0] [], which is a surreal number.
        Easier than Python!
-       Also in Python I could only make surreal numbers up to 999,
+       Also in Python I concatMauld only make surreal numbers up to 999,
        but with this I was able to do (Position [10000] [])
        (it just took a while to compute)--}
     fromInteger x
-        | x > 0 = (Position [fromInteger (x-1)] [])
-        | x < 0 = negate $ fromInteger $ negate x
-        | otherwise = (Position [] [])
+        | x > 0 = Position [fromInteger $ pred x] []
+        | x < 0 = negate . fromInteger $ negate x
+        | otherwise = Position [] []
+    signum = undefined
+    abs    = undefined
+    (*)    = undefined
 
 instance Eq Game where
     xGame == yGame = (xGame <= yGame) && (yGame <= xGame)
