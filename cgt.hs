@@ -22,13 +22,14 @@ getRight (Position _ right) = right
 
 --overloading?
 instance Show Game where
-    show (Position [] []) = "{|}"
-    show (Position left []) = "{" ++ concatMap show left ++ "|}"
-    show (Position [] right) ="{|"++ concatMap show right++ "}"
-    show (Position left right)
-        = "{" ++ concatMap show left
-              ++"|"
-              ++ concatMap show right ++ "}"
+    show (Position [] [])      = "{|}"
+    show (Position left [])    = "{" ++ showAll left ++ "|}"
+    show (Position [] right)   ="{|"++ showAll right++ "}"
+    show (Position left right) = "{" ++ showAll left ++ "|" 
+                                     ++ showAll right ++ "}"
+
+showAll :: (Show a) => [a] -> String
+showAll = concatMap show
 
 instance Num Game where
     negate (Position left right)
